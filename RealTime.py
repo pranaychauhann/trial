@@ -42,7 +42,7 @@ with mp.solutions.holistic.Holistic(min_detection_confidence=0.80, min_tracking_
                 keypoints.append(keypoint_extraction(results))
 
                 # Predict every 20 frames if cooldown is not active
-                if len(keypoints) == 20 and cooldown_frames == 0:
+                if len(keypoints) == 20:
                     keypoints = np.array(keypoints)
                     prediction = model.predict(keypoints[np.newaxis, :, :])
                     keypoints = []
@@ -51,8 +51,8 @@ with mp.solutions.holistic.Holistic(min_detection_confidence=0.80, min_tracking_
                     if np.max(prediction) >= 0.99:
                         predicted_action = actions[np.argmax(prediction)]
                         
-                        # Only append if prediction differs from the last one
-                        if predicted_action != last_prediction:
+                        # Only append if prediction differs from the last one or cooldown has expired
+                        if predicted_action != last_prediction or cooldown_frames == 0:
                             sentence.append(predicted_action)
                             last_prediction = predicted_action
                             cooldown_frames = cooldown_threshold  # Activate cooldown
@@ -60,9 +60,9 @@ with mp.solutions.holistic.Holistic(min_detection_confidence=0.80, min_tracking_
                 # Decrease cooldown frame count
                 cooldown_frames = max(0, cooldown_frames - 1)
 
-                # Limit sentence length
-                if len(sentence) > 7:
-                    sentence = sentence[-7:]
+                # Limit sentence length for display
+                if len(sentence) > 10:  # Allow a longer sentence if needed
+                    sentence = sentence[-10:]
 
             # Print the final sentence detected after processing the video
             final_sentence = ' '.join([word.capitalize() for word in sentence])
