@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
     private void uploadVideo(Uri videoUri) {
         new Thread(() -> {
             try {
-                HttpURLConnection connection = createHttpURLConnection("http://192.168.0.108:5000/upload");
+                HttpURLConnection connection = createHttpURLConnection("http://192.168.165.227:5000/upload");
                 OutputStream outputStream = connection.getOutputStream();
                 writeVideoDataToStream(videoUri, outputStream);
 
@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
         new Thread(() -> {
             try {
                 // Send a GET request to fetch the output from the server
-                URL url = new URL("http://192.168.0.108:5000/output"); // Adjust this URL to your Flask server endpoint
+                URL url = new URL("http://192.168.165.227:5000/output"); // Adjust this URL to your Flask server endpoint
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
 
